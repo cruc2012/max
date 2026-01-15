@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: Comic Sans MS, Impact, sans-serif;
+}
+
+/* BACKGROUND */
+body {
+  background-image: url("1.png");
+  background-repeat: repeat;
+  animation: scrollBg 20s linear infinite;
+}
+
+@keyframes scrollBg {
+  from { background-position: 0 0; }
+  to { background-position: 1200px 1200px; }
+}
+
+/* TITLE */
+h1 {
+  position: fixed;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 3rem;
+  color: red;
+  text-shadow: 4px 4px black;
+  z-index: 20;
+}
+
+/* WATERMARK (BOUNCING) */
+#watermark {
+  position: absolute;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 1px 1px black;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* DVD */
+.dvd {
+  position: absolute;
+  width: 140px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* JUMPSCARE */
+#jumpscare {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  display: none;
+  z-index: 999;
+}
+
+/* RAIN */
+.rain {
+  position: absolute;
+  top: -120px;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(120vh) rotate(360deg);
+    opacity: 0.85;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</h1>
+
+<div id="watermark">Built by Curtis Gann</div>
+<img id="jumpscare">
+
+<script>
+// IMAGE LIST
+const images = ["1.png","2.png","3.png","4.png","5.png"];
+
+// ===== MULTIPLE DVD BOUNCERS =====
+const dvdCount = 5;
+const dvds = [];
+
+for (let i = 0; i < dvdCount; i++) {
+  const img = document.createElement("img");
+  img.className = "dvd";
+  img.src = images[Math.floor(Math.random() * images.length)];
+  document.body.appendChild(img);
+
+  dvds.push({
+    el: img,
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    dx: (Math.random() * 4 + 2) * (Math.random() < 0.5 ? -1 : 1),
+    dy: (Math.random() * 4 + 2) * (Math.random() < 0.5 ? -1 : 1)
+  });
+}
+
+function moveDVDs() {
+  dvds.forEach(dvd => {
+    dvd.x += dvd.dx;
+    dvd.y += dvd.dy;
+
+    if (dvd.x <= 0 || dvd.x + dvd.el.width >= window.innerWidth) {
+      dvd.dx *= -1;
+      dvd.el.src = images[Math.floor(Math.random() * images.length)];
+    }
+    if (dvd.y <= 0 || dvd.y + dvd.el.height >= window.innerHeight) {
+      dvd.dy *= -1;
+      dvd.el.src = images[Math.floor(Math.random() * images.length)];
+    }
+
+    dvd.el.style.left = dvd.x + "px";
+    dvd.el.style.top = dvd.y + "px";
+  });
+
+  requestAnimationFrame(moveDVDs);
+}
+moveDVDs();
+
+// ===== BOUNCING WATERMARK =====
+const watermark = document.getElementById("watermark");
+
+let wx = Math.random() * window.innerWidth;
+let wy = Math.random() * window.innerHeight;
+let wdx = 2.5;
+let wdy = 2;
+
+function moveWatermark() {
+  wx += wdx;
+  wy += wdy;
+
+  if (wx <= 0 || wx + watermark.offsetWidth >= window.innerWidth) {
+    wdx *= -1;
+  }
+  if (wy <= 0 || wy + watermark.offsetHeight >= window.innerHeight) {
+    wdy *= -1;
+  }
+
+  watermark.style.left = wx + "px";
+  watermark.style.top = wy + "px";
+
+  requestAnimationFrame(moveWatermark);
+}
+moveWatermark();
+
+// ===== JUMPSCARE =====
+const jumpscare = document.getElementById("jumpscare");
+
+function triggerJumpscare() {
+  jumpscare.src = images[Math.floor(Math.random() * images.length)];
+  jumpscare.style.display = "block";
+  setTimeout(() => jumpscare.style.display = "none", 120);
+}
+
+setInterval(() => {
+  if (Math.random() < 0.5) triggerJumpscare();
+}, 7000);
+
+// ===== CLICK SPAWN =====
+document.addEventListener("click", e => {
+  const img = document.createElement("img");
+  img.src = images[Math.floor(Math.random() * images.length)];
+  img.style.position = "absolute";
+  img.style.width = "100px";
+  img.style.left = e.clientX + "px";
+  img.style.top = e.clientY + "px";
+  img.style.transform =
+    "translate(-50%, -50%) rotate(" + Math.random() * 360 + "deg)";
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 3000);
+});
+
+// ===== RAIN =====
+function spawnRain() {
+  const img = document.createElement("img");
+  img.src = images[Math.floor(Math.random() * images.length)];
+  img.className = "rain";
+  img.style.left = Math.random() * window.innerWidth + "px";
+  img.style.width = Math.random() * 60 + 40 + "px";
+  img.style.animationDuration = Math.random() * 3 + 2 + "s";
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 6000);
+}
+
+setInterval(spawnRain, 120);
+</script>
+
+</body>
+</html>
