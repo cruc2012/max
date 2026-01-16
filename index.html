@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>MAX</title>
+<title>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,16 +12,18 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: Comic Sans MS, Impact, sans-serif;
-  background: black;
 }
 
-/* GRID BACKGROUND */
-.background-img {
-  position: absolute;
-  width: 100px;  /* size of each MAX image */
-  height: 100px;
-  pointer-events: none;
-  z-index: -1;
+/* BACKGROUND */
+body {
+  background-image: url("1.png");
+  background-repeat: repeat;
+  animation: scrollBg 20s linear infinite;
+}
+
+@keyframes scrollBg {
+  from { background-position: 0 0; }
+  to { background-position: 1200px 1200px; }
 }
 
 /* TITLE */
@@ -84,25 +86,13 @@ h1 {
 <body>
 
 <h1>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</h1>
+
 <div id="watermark">Built by Curtis Gann</div>
 <img id="jumpscare">
 
 <script>
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
-
-// ===== CREATE GRID BACKGROUND =====
-const gridSize = 100; // size of each MAX image
-for (let x = 0; x < window.innerWidth; x += gridSize) {
-  for (let y = 0; y < window.innerHeight; y += gridSize) {
-    const bgImg = document.createElement("img");
-    bgImg.className = "background-img";
-    bgImg.src = images[Math.floor(Math.random() * images.length)];
-    bgImg.style.left = x + "px";
-    bgImg.style.top = y + "px";
-    document.body.appendChild(bgImg);
-  }
-}
 
 // ===== MULTIPLE DVD BOUNCERS (START CENTER) =====
 const dvdCount = 5;
@@ -131,12 +121,19 @@ function moveDVDs() {
     dvd.x += dvd.dx;
     dvd.y += dvd.dy;
 
-    if (dvd.x <= 0 || dvd.x + dvd.el.width >= window.innerWidth) dvd.dx *= -1;
-    if (dvd.y <= 0 || dvd.y + dvd.el.height >= window.innerHeight) dvd.dy *= -1;
+    if (dvd.x <= 0 || dvd.x + dvd.el.width >= window.innerWidth) {
+      dvd.dx *= -1;
+      dvd.el.src = images[Math.floor(Math.random() * images.length)];
+    }
+    if (dvd.y <= 0 || dvd.y + dvd.el.height >= window.innerHeight) {
+      dvd.dy *= -1;
+      dvd.el.src = images[Math.floor(Math.random() * images.length)];
+    }
 
     dvd.el.style.left = dvd.x + "px";
     dvd.el.style.top = dvd.y + "px";
   });
+
   requestAnimationFrame(moveDVDs);
 }
 moveDVDs();
@@ -209,4 +206,3 @@ setInterval(spawnRain, 120);
 
 </body>
 </html>
-
