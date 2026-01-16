@@ -15,10 +15,10 @@ html, body {
   background: black;
 }
 
-/* BACKGROUND GRID */
+/* GRID BACKGROUND */
 .background-img {
   position: absolute;
-  width: 100px;
+  width: 100px;  /* size of each MAX image */
   height: 100px;
   pointer-events: none;
   z-index: -1;
@@ -91,8 +91,8 @@ h1 {
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
 
-// ===== BACKGROUND GRID =====
-const gridSize = 100; // size of each background image
+// ===== CREATE GRID BACKGROUND =====
+const gridSize = 100; // size of each MAX image
 for (let x = 0; x < window.innerWidth; x += gridSize) {
   for (let y = 0; y < window.innerHeight; y += gridSize) {
     const bgImg = document.createElement("img");
