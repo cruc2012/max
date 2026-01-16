@@ -14,16 +14,26 @@ html, body {
   font-family: Comic Sans MS, Impact, sans-serif;
 }
 
-/* BACKGROUND */
-body {
+/* BACKGROUND LAYERS */
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
   background-repeat: repeat;
-  animation: scrollBg 20s linear infinite;
-  transition: background-image 0.5s ease-in-out;
+  opacity: 0.35;
+  animation: moveBg linear infinite;
 }
 
-@keyframes scrollBg {
-  from { background-position: 0 0; }
-  to { background-position: 1200px 1200px; }
+.bg1 { animation-duration: 40s; z-index: -4; }
+.bg2 { animation-duration: 30s; z-index: -3; }
+.bg3 { animation-duration: 20s; z-index: -2; }
+.bg4 { animation-duration: 15s; z-index: -1; }
+
+@keyframes moveBg {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-50%, -50%); }
 }
 
 /* TITLE */
@@ -85,6 +95,12 @@ h1 {
 </head>
 <body>
 
+<!-- MULTI BACKGROUND -->
+<div class="bg bg1"></div>
+<div class="bg bg2"></div>
+<div class="bg bg3"></div>
+<div class="bg bg4"></div>
+
 <h1>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</h1>
 
 <div id="watermark">Built by Curtis Gann</div>
@@ -94,17 +110,13 @@ h1 {
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
 
-// ===== RANDOM BACKGROUND =====
-function setRandomBackground() {
+// ASSIGN RANDOM IMAGES TO BACKGROUNDS
+document.querySelectorAll(".bg").forEach(bg => {
   const img = images[Math.floor(Math.random() * images.length)];
-  document.body.style.backgroundImage = `url('${img}')`;
-}
+  bg.style.backgroundImage = `url('${img}')`;
+});
 
-// set instantly + change every 4 seconds
-setRandomBackground();
-setInterval(setRandomBackground, 4000);
-
-// ===== MULTIPLE DVD BOUNCERS (START CENTER) =====
+// ===== MULTIPLE DVD BOUNCERS (CENTER START) =====
 const dvdCount = 5;
 const dvds = [];
 
@@ -131,19 +143,12 @@ function moveDVDs() {
     dvd.x += dvd.dx;
     dvd.y += dvd.dy;
 
-    if (dvd.x <= 0 || dvd.x + dvd.el.width >= window.innerWidth) {
-      dvd.dx *= -1;
-      dvd.el.src = images[Math.floor(Math.random() * images.length)];
-    }
-    if (dvd.y <= 0 || dvd.y + dvd.el.height >= window.innerHeight) {
-      dvd.dy *= -1;
-      dvd.el.src = images[Math.floor(Math.random() * images.length)];
-    }
+    if (dvd.x <= 0 || dvd.x + dvd.el.width >= window.innerWidth) dvd.dx *= -1;
+    if (dvd.y <= 0 || dvd.y + dvd.el.height >= window.innerHeight) dvd.dy *= -1;
 
     dvd.el.style.left = dvd.x + "px";
     dvd.el.style.top = dvd.y + "px";
   });
-
   requestAnimationFrame(moveDVDs);
 }
 moveDVDs();
@@ -182,21 +187,6 @@ function triggerJumpscare() {
 setInterval(() => {
   if (Math.random() < 0.5) triggerJumpscare();
 }, 7000);
-
-// ===== CLICK SPAWN =====
-document.addEventListener("click", e => {
-  const img = document.createElement("img");
-  img.src = images[Math.floor(Math.random() * images.length)];
-  img.style.position = "absolute";
-  img.style.width = "100px";
-  img.style.left = e.clientX + "px";
-  img.style.top = e.clientY + "px";
-  img.style.transform =
-    "translate(-50%, -50%) rotate(" + Math.random() * 360 + "deg)";
-  document.body.appendChild(img);
-
-  setTimeout(() => img.remove(), 3000);
-});
 
 // ===== RAIN =====
 function spawnRain() {
