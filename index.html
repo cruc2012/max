@@ -16,9 +16,9 @@ html, body {
 
 /* BACKGROUND */
 body {
-  background-image: url("1.png");
   background-repeat: repeat;
   animation: scrollBg 20s linear infinite;
+  transition: background-image 0.5s ease-in-out;
 }
 
 @keyframes scrollBg {
@@ -93,6 +93,16 @@ h1 {
 <script>
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
+
+// ===== RANDOM BACKGROUND =====
+function setRandomBackground() {
+  const img = images[Math.floor(Math.random() * images.length)];
+  document.body.style.backgroundImage = `url('${img}')`;
+}
+
+// set instantly + change every 4 seconds
+setRandomBackground();
+setInterval(setRandomBackground, 4000);
 
 // ===== MULTIPLE DVD BOUNCERS (START CENTER) =====
 const dvdCount = 5;
