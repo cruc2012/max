@@ -12,28 +12,16 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: Comic Sans MS, Impact, sans-serif;
+  background: black;
 }
 
-/* BACKGROUND LAYERS */
-.bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  background-repeat: repeat;
-  opacity: 0.35;
-  animation: moveBg linear infinite;
-}
-
-.bg1 { animation-duration: 40s; z-index: -4; }
-.bg2 { animation-duration: 30s; z-index: -3; }
-.bg3 { animation-duration: 20s; z-index: -2; }
-.bg4 { animation-duration: 15s; z-index: -1; }
-
-@keyframes moveBg {
-  from { transform: translate(0, 0); }
-  to { transform: translate(-50%, -50%); }
+/* BACKGROUND GRID */
+.background-img {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* TITLE */
@@ -95,14 +83,7 @@ h1 {
 </head>
 <body>
 
-<!-- MULTI BACKGROUND -->
-<div class="bg bg1"></div>
-<div class="bg bg2"></div>
-<div class="bg bg3"></div>
-<div class="bg bg4"></div>
-
 <h1>MAXXXXXXXXXXXXXXXXXXXXXXXXXXXX</h1>
-
 <div id="watermark">Built by Curtis Gann</div>
 <img id="jumpscare">
 
@@ -110,13 +91,20 @@ h1 {
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
 
-// ASSIGN RANDOM IMAGES TO BACKGROUNDS
-document.querySelectorAll(".bg").forEach(bg => {
-  const img = images[Math.floor(Math.random() * images.length)];
-  bg.style.backgroundImage = `url('${img}')`;
-});
+// ===== BACKGROUND GRID =====
+const gridSize = 100; // size of each background image
+for (let x = 0; x < window.innerWidth; x += gridSize) {
+  for (let y = 0; y < window.innerHeight; y += gridSize) {
+    const bgImg = document.createElement("img");
+    bgImg.className = "background-img";
+    bgImg.src = images[Math.floor(Math.random() * images.length)];
+    bgImg.style.left = x + "px";
+    bgImg.style.top = y + "px";
+    document.body.appendChild(bgImg);
+  }
+}
 
-// ===== MULTIPLE DVD BOUNCERS (CENTER START) =====
+// ===== MULTIPLE DVD BOUNCERS (START CENTER) =====
 const dvdCount = 5;
 const dvds = [];
 
@@ -187,6 +175,21 @@ function triggerJumpscare() {
 setInterval(() => {
   if (Math.random() < 0.5) triggerJumpscare();
 }, 7000);
+
+// ===== CLICK SPAWN =====
+document.addEventListener("click", e => {
+  const img = document.createElement("img");
+  img.src = images[Math.floor(Math.random() * images.length)];
+  img.style.position = "absolute";
+  img.style.width = "100px";
+  img.style.left = e.clientX + "px";
+  img.style.top = e.clientY + "px";
+  img.style.transform =
+    "translate(-50%, -50%) rotate(" + Math.random() * 360 + "deg)";
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 3000);
+});
 
 // ===== RAIN =====
 function spawnRain() {
