@@ -90,47 +90,42 @@ h1 {
 <div id="watermark">Built by Curtis Gann</div>
 <img id="jumpscare">
 
-<!-- Persistent Audio Element -->
-<audio id="randomPlayer"></audio>
-
 <script>
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
 
-// ===== FIXED RANDOM SOUND SYSTEM =====
+// ===== RANDOM SOUND SYSTEM (WORKING VERSION) =====
 const sounds = [
   "/sounds/1.ogg",
   "/sounds/2.ogg",
   "/sounds/3.ogg"
 ];
 
-const audioPlayer = document.getElementById("randomPlayer");
 let soundStarted = false;
 
-function getRandomDelay() {
+function randomDelay() {
   return Math.floor(Math.random() * 5000) + 3000; // 3-8 sec
 }
 
 function playRandomSound() {
-  const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-  audioPlayer.src = randomSound;
-  audioPlayer.volume = 1;
-  audioPlayer.play().catch(() => {});
+  const sound = sounds[Math.floor(Math.random() * sounds.length)];
+  const audio = document.createElement("audio");
+  audio.src = sound;
+  audio.volume = 1;
+  audio.play().catch(() => {});
 }
 
-function scheduleNextSound() {
+function soundLoop() {
   setTimeout(() => {
     playRandomSound();
-    scheduleNextSound();
-  }, getRandomDelay());
+    soundLoop();
+  }, randomDelay());
 }
 
-// Start after first click (bypasses autoplay restrictions)
 document.addEventListener("click", () => {
   if (!soundStarted) {
     soundStarted = true;
-    playRandomSound();
-    scheduleNextSound();
+    soundLoop();
   }
 });
 
@@ -177,6 +172,71 @@ function moveDVDs() {
   requestAnimationFrame(moveDVDs);
 }
 moveDVDs();
+
+// ===== BOUNCING WATERMARK =====
+const watermark = document.getElementById("watermark");
+
+let wx = centerX;
+let wy = centerY;
+let wdx = 2.5;
+let wdy = 2;
+
+function moveWatermark() {
+  wx += wdx;
+  wy += wdy;
+
+  if (wx <= 0 || wx + watermark.offsetWidth >= window.innerWidth) wdx *= -1;
+  if (wy <= 0 || wy + watermark.offsetHeight >= window.innerHeight) wdy *= -1;
+
+  watermark.style.left = wx + "px";
+  watermark.style.top = wy + "px";
+
+  requestAnimationFrame(moveWatermark);
+}
+moveWatermark();
+
+// ===== JUMPSCARE =====
+const jumpscare = document.getElementById("jumpscare");
+
+function triggerJumpscare() {
+  jumpscare.src = images[Math.floor(Math.random() * images.length)];
+  jumpscare.style.display = "block";
+  setTimeout(() => jumpscare.style.display = "none", 120);
+}
+
+setInterval(() => {
+  if (Math.random() < 0.5) triggerJumpscare();
+}, 7000);
+
+// ===== CLICK SPAWN =====
+document.addEventListener("click", e => {
+  const img = document.createElement("img");
+  img.src = images[Math.floor(Math.random() * images.length)];
+  img.style.position = "absolute";
+  img.style.width = "100px";
+  img.style.left = e.clientX + "px";
+  img.style.top = e.clientY + "px";
+  img.style.transform =
+    "translate(-50%, -50%) rotate(" + Math.random() * 360 + "deg)";
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 3000);
+});
+
+// ===== RAIN =====
+function spawnRain() {
+  const img = document.createElement("img");
+  img.src = images[Math.floor(Math.random() * images.length)];
+  img.className = "rain";
+  img.style.left = Math.random() * window.innerWidth + "px";
+  img.style.width = Math.random() * 60 + 40 + "px";
+  img.style.animationDuration = Math.random() * 3 + 2 + "s";
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 6000);
+}
+
+setInterval(spawnRain, 320);
 </script>
 
 </body>
