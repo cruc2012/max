@@ -94,7 +94,41 @@ h1 {
 // IMAGE LIST
 const images = ["1.png","2.png","3.png","4.png","5.png"];
 
-// ===== MULTIPLE DVD BOUNCERS (START CENTER) =====
+// ===== RANDOM SOUND SYSTEM =====
+const sounds = [
+  "/sounds/1.ogg",
+  "/sounds/2.ogg",
+  "/sounds/3.ogg"
+];
+
+let soundStarted = false;
+
+function getRandomDelay() {
+  return Math.floor(Math.random() * 5000) + 3000;
+}
+
+function playRandomSound() {
+  const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+  const audio = new Audio(randomSound);
+  audio.volume = 1;
+  audio.play().catch(() => {});
+}
+
+function soundLoop() {
+  setTimeout(() => {
+    playRandomSound();
+    soundLoop();
+  }, getRandomDelay());
+}
+
+document.addEventListener("click", () => {
+  if (!soundStarted) {
+    soundStarted = true;
+    soundLoop();
+  }
+});
+
+// ===== MULTIPLE DVD BOUNCERS =====
 const dvdCount = 15;
 const dvds = [];
 
@@ -206,5 +240,6 @@ setInterval(spawnRain, 320);
 
 </body>
 </html>
+
 
 
